@@ -174,7 +174,7 @@ namespace ImageProcessing
 
         private void histogramToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(cameraRunning)
+            if (cameraRunning)
             {
                 currentMode = ProcessingMode.Histogram;
                 return;
@@ -228,10 +228,10 @@ namespace ImageProcessing
         {
             if (cameraRunning)
             {
-                if(currentMode != ProcessingMode.Subtraction)
-                currentMode = ProcessingMode.None;
+                if (currentMode != ProcessingMode.Subtraction)
+                    currentMode = ProcessingMode.None;
             }
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Title = "Select an Image";
                 openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
@@ -366,7 +366,7 @@ namespace ImageProcessing
             processingTimer.Start();
         }
 
-        private void ProcessFrame() 
+        private void ProcessFrame()
         {
             if (loaded == null) return;
 
@@ -397,6 +397,12 @@ namespace ImageProcessing
                     processed = ApplyInversion(input);
                     break;
                 case ProcessingMode.Subtraction:
+                    if (background == null)
+                    {
+                        // no background image loaded
+                        processed = null;
+                        break;
+                    }
                     processed = ApplySubtraction(input, background);
                     break;
                 default:
@@ -405,14 +411,15 @@ namespace ImageProcessing
 
             if (processed != null)
             {
-                if(currentMode != ProcessingMode.Subtraction)
+                if (currentMode != ProcessingMode.Subtraction)
                 {
                     pictureBox2.Invoke((MethodInvoker)(() =>
                     {
                         pictureBox2.Image?.Dispose();
                         pictureBox2.Image = processed;
                     }));
-                } else
+                }
+                else
                 {
                     pictureBox3.Invoke((MethodInvoker)(() =>
                     {
@@ -653,8 +660,27 @@ namespace ImageProcessing
             return result;
         }
 
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (processed == null) return;
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Title = "Save Processed Image";
+            saveDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp";
 
+            if (saveDialog.ShowDialog() == DialogResult.OK)
+            {
+                System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Png;
 
+                string ext = System.IO.Path.GetExtension(saveDialog.FileName).ToLower();
+                if (ext == ".jpg" || ext == ".jpeg")
+                    format = System.Drawing.Imaging.ImageFormat.Jpeg;
+                else if (ext == ".bmp")
+                    format = System.Drawing.Imaging.ImageFormat.Bmp;
 
+                processed.Save(saveDialog.FileName, format);
+
+                MessageBox.Show("Image saved successfully!");
+            }
+        }
     }
 }
