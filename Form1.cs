@@ -466,52 +466,46 @@ namespace ImageProcessing
 
         private Bitmap ApplyGreyscale(Bitmap loaded)
         {
-            Bitmap processed = new Bitmap(loaded.Width, loaded.Height);
+            // Convert Bitmap to Mat
+            Mat src = loaded.ToMat();
 
-            for (int y = 0; y < loaded.Height; y++)
-            {
-                for (int x = 0; x < loaded.Width; x++)
-                {
-                    Color pixelColor = loaded.GetPixel(x, y);
+            // Destination Mat
+            Mat gray = new Mat();
 
-                    int greyValue = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+            // Convert to grayscale using OpenCV
+            Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
 
-                    Color greyColor = Color.FromArgb(greyValue, greyValue, greyValue);
-                    processed.SetPixel(x, y, greyColor);
-                }
-            }
-
-            return processed;
+            // Convert back to Bitmap for PictureBox display
+            return gray.ToBitmap();
         }
 
         private Bitmap ApplySepia(Bitmap loaded)
         {
-            Bitmap processed = new Bitmap(loaded.Width, loaded.Height);
+            Mat src = OpenCvSharp.Extensions.BitmapConverter.ToMat(loaded);
 
-            for (int y = 0; y < loaded.Height; y++)
+            // Sepia filter kernel (3x3)
+            float[,] sepiaKernel =
             {
-                for (int x = 0; x < loaded.Width; x++)
-                {
-                    Color pixelColor = loaded.GetPixel(x, y);
+                { 0.272f, 0.534f, 0.131f },
+                { 0.349f, 0.686f, 0.168f },
+                { 0.393f, 0.769f, 0.189f }
+            };
 
-                    int r = pixelColor.R;
-                    int g = pixelColor.G;
-                    int b = pixelColor.B;
+            // Create a 3x3 Mat for kernel
+            Mat kernel = Mat.FromArray(sepiaKernel);
+            // Convert source to float for transform
+            Mat srcFloat = new Mat();
+            src.ConvertTo(srcFloat, MatType.CV_32F);
 
-                    int newR = (int)(0.393 * r + 0.769 * g + 0.189 * b);
-                    int newG = (int)(0.349 * r + 0.686 * g + 0.168 * b);
-                    int newB = (int)(0.272 * r + 0.534 * g + 0.131 * b);
+            // Apply sepia transform
+            Mat sepia = new Mat();
+            Cv2.Transform(srcFloat, sepia, kernel);
 
-                    newR = Math.Min(255, newR);
-                    newG = Math.Min(255, newG);
-                    newB = Math.Min(255, newB);
+            // Convert back to 8-bit
+            sepia.ConvertTo(sepia, MatType.CV_8U);
 
-                    Color sepiaColor = Color.FromArgb(newR, newG, newB);
-                    processed.SetPixel(x, y, sepiaColor);
-                }
-            }
-
-            return processed;
+            // Convert Mat - Bitmap
+            return OpenCvSharp.Extensions.BitmapConverter.ToBitmap(sepia);
         }
         private void ApplyHistogram(Bitmap greyed)
         {
@@ -558,70 +552,6 @@ namespace ImageProcessing
 
         private Bitmap ApplySubtraction(Bitmap foreground, Bitmap background)
         {
-            //int width = Math.Min(foreground.Width, background.Width);
-            //int height = Math.Min(foreground.Height, background.Height);
-            //Bitmap result = new Bitmap(width, height);
-
-            //int greenThreshold = 100;     // how strong green must be
-            //int greenDifference = 60;     // how much stronger green must be vs red/blue
-
-            //for (int x = 0; x < width; x++)
-            //{
-            //    for (int y = 0; y < height; y++)
-            //    {
-            //        Color fg = foreground.GetPixel(x, y);
-
-            //        if (fg.G > greenThreshold && fg.G - fg.R > greenDifference && fg.G - fg.B > greenDifference)
-            //        {
-            //            // use background pixel if it's "green enough"
-            //            result.SetPixel(x, y, background.GetPixel(x, y));
-            //        }
-            //        else
-            //        {
-            //            // keep original pixel
-            //            result.SetPixel(x, y, fg);
-            //        }
-            //    }
-            //}
-
-            //return result;
-
-            //if (fgImage == null || bgImage == null)
-            //    throw new ArgumentException("Foreground or background image is null");
-
-            //Bitmap foreground = new Bitmap(fgImage);
-            //Bitmap background = new Bitmap(bgImage);
-
-            //int width = Math.Min(foreground.Width, background.Width);
-            //int height = Math.Min(foreground.Height, background.Height);
-
-            //Bitmap result = new Bitmap(width, height);
-
-            //int greenThreshold = 100;
-            //int greenDifference = 60;
-
-            //for (int x = 0; x < width; x++)
-            //{
-            //    for (int y = 0; y < height; y++)
-            //    {
-            //        Color fg = foreground.GetPixel(x, y);
-
-            //        if (fg.G > greenThreshold && fg.G - fg.R > greenDifference && fg.G - fg.B > greenDifference)
-            //        {
-            //            result.SetPixel(x, y, background.GetPixel(x, y));
-            //        }
-            //        else
-            //        {
-            //            result.SetPixel(x, y, fg);
-            //        }
-            //    }
-            //}
-
-            //foreground.Dispose();
-            //background.Dispose();
-
-            //return result;
-
             if (foreground == null || background == null)
                 throw new ArgumentException("Foreground or background bitmap is null");
 
