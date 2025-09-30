@@ -40,10 +40,22 @@
             histogramToolStripMenuItem = new ToolStripMenuItem();
             sepiaToolStripMenuItem = new ToolStripMenuItem();
             subtractionToolStripMenuItem = new ToolStripMenuItem();
+            smoothingToolStripMenuItem = new ToolStripMenuItem();
+            gaussianBlurToolStripMenuItem = new ToolStripMenuItem();
+            sharpenToolStripMenuItem = new ToolStripMenuItem();
+            meanRemovalToolStripMenuItem = new ToolStripMenuItem();
+            embossingToolStripMenuItem = new ToolStripMenuItem();
+            embossLaplascianToolStripMenuItem = new ToolStripMenuItem();
+            horizontalToolStripMenuItem = new ToolStripMenuItem();
+            allDirectionsToolStripMenuItem = new ToolStripMenuItem();
+            horzVerticalToolStripMenuItem = new ToolStripMenuItem();
+            horizontalOnlyToolStripMenuItem = new ToolStripMenuItem();
+            verticalOnlyToolStripMenuItem = new ToolStripMenuItem();
+            lossyToolStripMenuItem = new ToolStripMenuItem();
+            saveToolStripMenuItem = new ToolStripMenuItem();
             pictureBox1 = new PictureBox();
             pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
-            saveToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -91,7 +103,7 @@
             // 
             // processToolStripMenuItem
             // 
-            processToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { basicCopyToolStripMenuItem, greyscaleToolStripMenuItem, colorInversionToolStripMenuItem, histogramToolStripMenuItem, sepiaToolStripMenuItem, subtractionToolStripMenuItem });
+            processToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { basicCopyToolStripMenuItem, greyscaleToolStripMenuItem, colorInversionToolStripMenuItem, histogramToolStripMenuItem, sepiaToolStripMenuItem, subtractionToolStripMenuItem, smoothingToolStripMenuItem, gaussianBlurToolStripMenuItem, sharpenToolStripMenuItem, meanRemovalToolStripMenuItem, embossingToolStripMenuItem });
             processToolStripMenuItem.Name = "processToolStripMenuItem";
             processToolStripMenuItem.Size = new Size(72, 24);
             processToolStripMenuItem.Text = "Process";
@@ -138,6 +150,97 @@
             subtractionToolStripMenuItem.Text = "Subtraction";
             subtractionToolStripMenuItem.Click += subtractionToolStripMenuItem_Click;
             // 
+            // smoothingToolStripMenuItem
+            // 
+            smoothingToolStripMenuItem.Name = "smoothingToolStripMenuItem";
+            smoothingToolStripMenuItem.Size = new Size(224, 26);
+            smoothingToolStripMenuItem.Text = "Smoothing";
+            smoothingToolStripMenuItem.Click += smoothingToolStripMenuItem_Click;
+            // 
+            // gaussianBlurToolStripMenuItem
+            // 
+            gaussianBlurToolStripMenuItem.Name = "gaussianBlurToolStripMenuItem";
+            gaussianBlurToolStripMenuItem.Size = new Size(224, 26);
+            gaussianBlurToolStripMenuItem.Text = "Gaussian Blur";
+            gaussianBlurToolStripMenuItem.Click += gaussianBlurToolStripMenuItem_Click;
+            // 
+            // sharpenToolStripMenuItem
+            // 
+            sharpenToolStripMenuItem.Name = "sharpenToolStripMenuItem";
+            sharpenToolStripMenuItem.Size = new Size(224, 26);
+            sharpenToolStripMenuItem.Text = "Sharpen";
+            sharpenToolStripMenuItem.Click += sharpenToolStripMenuItem_Click;
+            // 
+            // meanRemovalToolStripMenuItem
+            // 
+            meanRemovalToolStripMenuItem.Name = "meanRemovalToolStripMenuItem";
+            meanRemovalToolStripMenuItem.Size = new Size(224, 26);
+            meanRemovalToolStripMenuItem.Text = "Mean Removal";
+            meanRemovalToolStripMenuItem.Click += meanRemovalToolStripMenuItem_Click;
+            // 
+            // embossingToolStripMenuItem
+            // 
+            embossingToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { embossLaplascianToolStripMenuItem, horizontalToolStripMenuItem, lossyToolStripMenuItem });
+            embossingToolStripMenuItem.Name = "embossingToolStripMenuItem";
+            embossingToolStripMenuItem.Size = new Size(224, 26);
+            embossingToolStripMenuItem.Text = "Embossing";
+            // 
+            // embossLaplascianToolStripMenuItem
+            // 
+            embossLaplascianToolStripMenuItem.Name = "embossLaplascianToolStripMenuItem";
+            embossLaplascianToolStripMenuItem.Size = new Size(224, 26);
+            embossLaplascianToolStripMenuItem.Text = "Emboss Laplascian";
+            embossLaplascianToolStripMenuItem.Click += embossLaplascianToolStripMenuItem_Click;
+            // 
+            // horizontalToolStripMenuItem
+            // 
+            horizontalToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { allDirectionsToolStripMenuItem, horzVerticalToolStripMenuItem, horizontalOnlyToolStripMenuItem, verticalOnlyToolStripMenuItem });
+            horizontalToolStripMenuItem.Name = "horizontalToolStripMenuItem";
+            horizontalToolStripMenuItem.Size = new Size(224, 26);
+            horizontalToolStripMenuItem.Text = "Directional";
+            // 
+            // allDirectionsToolStripMenuItem
+            // 
+            allDirectionsToolStripMenuItem.Name = "allDirectionsToolStripMenuItem";
+            allDirectionsToolStripMenuItem.Size = new Size(224, 26);
+            allDirectionsToolStripMenuItem.Text = "All Directions";
+            allDirectionsToolStripMenuItem.Click += allDirectionsToolStripMenuItem_Click;
+            // 
+            // horzVerticalToolStripMenuItem
+            // 
+            horzVerticalToolStripMenuItem.Name = "horzVerticalToolStripMenuItem";
+            horzVerticalToolStripMenuItem.Size = new Size(224, 26);
+            horzVerticalToolStripMenuItem.Text = "Horz/Vertical";
+            horzVerticalToolStripMenuItem.Click += horzVerticalToolStripMenuItem_Click;
+            // 
+            // horizontalOnlyToolStripMenuItem
+            // 
+            horizontalOnlyToolStripMenuItem.Name = "horizontalOnlyToolStripMenuItem";
+            horizontalOnlyToolStripMenuItem.Size = new Size(224, 26);
+            horizontalOnlyToolStripMenuItem.Text = "Horizontal Only";
+            horizontalOnlyToolStripMenuItem.Click += horizontalOnlyToolStripMenuItem_Click;
+            // 
+            // verticalOnlyToolStripMenuItem
+            // 
+            verticalOnlyToolStripMenuItem.Name = "verticalOnlyToolStripMenuItem";
+            verticalOnlyToolStripMenuItem.Size = new Size(224, 26);
+            verticalOnlyToolStripMenuItem.Text = "Vertical Only";
+            verticalOnlyToolStripMenuItem.Click += verticalOnlyToolStripMenuItem_Click;
+            // 
+            // lossyToolStripMenuItem
+            // 
+            lossyToolStripMenuItem.Name = "lossyToolStripMenuItem";
+            lossyToolStripMenuItem.Size = new Size(224, 26);
+            lossyToolStripMenuItem.Text = "Lossy";
+            lossyToolStripMenuItem.Click += lossyToolStripMenuItem_Click;
+            // 
+            // saveToolStripMenuItem
+            // 
+            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            saveToolStripMenuItem.Size = new Size(54, 24);
+            saveToolStripMenuItem.Text = "Save";
+            saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
+            // 
             // pictureBox1
             // 
             pictureBox1.Location = new Point(14, 36);
@@ -167,13 +270,6 @@
             pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox3.TabIndex = 3;
             pictureBox3.TabStop = false;
-            // 
-            // saveToolStripMenuItem
-            // 
-            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(54, 24);
-            saveToolStripMenuItem.Text = "Save";
-            saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -217,5 +313,17 @@
         private ToolStripMenuItem backgroundImageToolStripMenuItem;
         private ToolStripMenuItem subtractionToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem smoothingToolStripMenuItem;
+        private ToolStripMenuItem gaussianBlurToolStripMenuItem;
+        private ToolStripMenuItem sharpenToolStripMenuItem;
+        private ToolStripMenuItem meanRemovalToolStripMenuItem;
+        private ToolStripMenuItem embossingToolStripMenuItem;
+        private ToolStripMenuItem embossLaplascianToolStripMenuItem;
+        private ToolStripMenuItem horizontalToolStripMenuItem;
+        private ToolStripMenuItem allDirectionsToolStripMenuItem;
+        private ToolStripMenuItem horzVerticalToolStripMenuItem;
+        private ToolStripMenuItem horizontalOnlyToolStripMenuItem;
+        private ToolStripMenuItem verticalOnlyToolStripMenuItem;
+        private ToolStripMenuItem lossyToolStripMenuItem;
     }
 }

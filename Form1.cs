@@ -26,7 +26,17 @@ namespace ImageProcessing
             Sepia,
             Subtraction,
             Histogram,
-            Inversion
+            Inversion,
+            Smoothing,
+            GaussianBlur,
+            Sharpen,
+            MeanRemoval,
+            EmbossLaplascian,
+            EmbossHV,
+            EmbossHorizontal,
+            EmbossVertical,
+            EmbossAllDirections,
+            EmbossLossy
         }
 
         private ProcessingMode currentMode = ProcessingMode.None;
@@ -405,6 +415,36 @@ namespace ImageProcessing
                     }
                     processed = ApplySubtraction(input, background);
                     break;
+                case ProcessingMode.Smoothing:
+                    processed = ApplySmoothing(input);
+                    break;
+                case ProcessingMode.GaussianBlur:
+                    processed = ApplyGaussianBlur(input);
+                    break;
+                case ProcessingMode.Sharpen:
+                    processed = ApplySharpen(input);
+                    break;
+                case ProcessingMode.MeanRemoval:
+                    processed = ApplyMeanRemoval(input);
+                    break;
+                case ProcessingMode.EmbossLaplascian:
+                    processed = ApplyEmbossLaplascian(input);
+                    break;
+                case ProcessingMode.EmbossHV:
+                    processed = ApplyEmbossHV(input);
+                    break;
+                case ProcessingMode.EmbossAllDirections:
+                    processed = ApplyEmbossAllDirections(input);
+                    break;
+                case ProcessingMode.EmbossLossy:
+                    processed = ApplyEmbossLossy(input);
+                    break;
+                case ProcessingMode.EmbossHorizontal:
+                    processed = ApplyEmbossHorizontal(input);
+                    break;
+                case ProcessingMode.EmbossVertical:
+                    processed = ApplyEmbossVertical(input);
+                    break;
                 default:
                     break;
             }
@@ -611,6 +651,263 @@ namespace ImageProcessing
 
                 MessageBox.Show("Image saved successfully!");
             }
+        }
+
+        private static Bitmap ApplyFilter(Bitmap bmp, float[,] kernelValues, float divisor, double offset)
+        {
+            // Convert Bitmap -> Mat
+            Mat src = BitmapConverter.ToMat(bmp);
+
+            // Normalize by divisor
+            if (divisor != 0)
+            {
+                for (int i = 0; i < kernelValues.GetLength(0); i++)
+                    for (int j = 0; j < kernelValues.GetLength(1); j++)
+                        kernelValues[i, j] /= divisor;
+            }
+
+            // Kernel to Mat
+            Mat kernel = Mat.FromArray(kernelValues);
+
+            // Apply filter
+            Mat dst = new Mat();
+            Cv2.Filter2D(src, dst, src.Depth(), kernel, delta: offset);
+
+            // Convert back to Bitmap
+            return BitmapConverter.ToBitmap(dst);
+        }
+
+        private Bitmap ApplySmoothing(Bitmap bmp, int weight = 1)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                { 1, 1, 1 },
+                { 1, weight, 1 },
+                { 1, 1, 1 }
+            };
+            float divisor = weight + 8;
+            double offset = 0;
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void smoothingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.Smoothing;
+            if (cameraRunning) { return; }
+            processed = ApplySmoothing(loaded);
+            pictureBox2.Image = processed;
+        }
+
+        private Bitmap ApplyGaussianBlur(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                { 1, 2, 1 },
+                { 2, 4, 2 },
+                { 1, 2, 1 }
+            };
+
+            float divisor = 16f;
+            double offset = 0;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void gaussianBlurToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.GaussianBlur;
+            if (cameraRunning) { return; }
+            processed = ApplyGaussianBlur(loaded);
+            pictureBox2.Image = processed;
+        }
+
+        private Bitmap ApplySharpen(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                {  0, -2,  0 },
+                { -2, 11, -2 },
+                {  0, -2,  0 }
+            };
+
+            float divisor = 3f;
+            double offset = 0;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void sharpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.Sharpen;
+            if (cameraRunning) { return; }
+            processed = ApplySharpen(loaded);
+            pictureBox2.Image = processed;
+        }
+
+        private Bitmap ApplyMeanRemoval(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                { -1, -1, -1 },
+                { -1,  9, -1 },
+                { -1, -1, -1 }
+            };
+
+            float divisor = 1f;
+            double offset = 0;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void meanRemovalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.MeanRemoval;
+            if (cameraRunning) { return; }
+            processed = ApplyMeanRemoval(loaded);
+            pictureBox2.Image = processed;
+        }
+        private Bitmap ApplyEmbossLaplascian(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                { -1,  0, -1 },
+                {  0,  4,  0 },
+                { -1,  0, -1 }
+            };
+
+            float divisor = 1f;
+            double offset = 127;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void embossLaplascianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.EmbossLaplascian;
+            if (cameraRunning) { return; }
+            processed = ApplyEmbossLaplascian(loaded);
+            pictureBox2.Image = processed;
+        }
+        private Bitmap ApplyEmbossHV(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                {  0, -1,  0 },
+                { -1,  4, -1 },
+                {  0, -1,  0 }
+            };
+
+            float divisor = 1f;
+            double offset = 127;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void horzVerticalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.EmbossHV;
+            if (cameraRunning) { return; }
+            processed = ApplyEmbossHV(loaded);
+            pictureBox2.Image = processed;
+        }
+        private Bitmap ApplyEmbossAllDirections(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                { -1, -1, -1 },
+                { -1,  8, -1 },
+                { -1, -1, -1 }
+            };
+
+            float divisor = 1f;
+            double offset = 127;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void allDirectionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.EmbossAllDirections;
+            if (cameraRunning) { return; }
+            processed = ApplyEmbossAllDirections(loaded);
+            pictureBox2.Image = processed;
+        }
+        private Bitmap ApplyEmbossLossy(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                {  1, -2,  1 },
+                { -2,  4, -2 },
+                { -2,  1, -2 }
+            };
+
+            float divisor = 1f;
+            double offset = 127;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void lossyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.EmbossLossy;
+            if (cameraRunning) { return; }
+            processed = ApplyEmbossLossy(loaded);
+            pictureBox2.Image = processed;
+        }
+
+        private Bitmap ApplyEmbossHorizontal(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                {  0,  0,  0 },
+                { -1,  2, -1 },
+                {  0,  0,  0 }
+            };
+
+            float divisor = 1f;
+            double offset = 127;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void horizontalOnlyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.EmbossHorizontal;
+            if (cameraRunning) { return; }
+            processed = ApplyEmbossHorizontal(loaded);
+            pictureBox2.Image = processed;
+        }
+        private Bitmap ApplyEmbossVertical(Bitmap bmp)
+        {
+            float[,] kernelValues = new float[,]
+            {
+                {  0, -1,  0 },
+                {  0,  0,  0 },
+                {  0,  1,  0 }
+            };
+
+            float divisor = 1f;
+            double offset = 127;
+
+            return ApplyFilter(bmp, kernelValues, divisor, offset);
+        }
+
+        private void verticalOnlyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox3.Image = null;
+            currentMode = ProcessingMode.EmbossVertical;
+            if (cameraRunning) { return; }
+            processed = ApplyEmbossVertical(loaded);
+            pictureBox2.Image = processed;
         }
     }
 }
